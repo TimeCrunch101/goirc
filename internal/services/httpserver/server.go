@@ -20,6 +20,9 @@ func (l *Logger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func Start() {
 
 	getRoutes := InitGetRoutes()
-	fmt.Println("http://localhost:8080/")
-	log.Fatal(http.ListenAndServe(":8080", getRoutes))
+	fmt.Println("API Running http://localhost:8080/")
+	err := http.ListenAndServe(":8080", getRoutes)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }

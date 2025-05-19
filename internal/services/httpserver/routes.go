@@ -12,6 +12,8 @@ func InitGetRoutes() *Logger {
 
 	// Unprotected Routes
 	mux.HandleFunc("/unprotected", Unprotected)
+	mux.HandleFunc("/get/irc/users", GetIrcUsers)
+	mux.HandleFunc("/echo", EchoMessage)
 
 	// Default Routes
 	mux.HandleFunc("/", NotFound)
