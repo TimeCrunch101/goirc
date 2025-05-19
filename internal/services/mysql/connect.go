@@ -48,5 +48,7 @@ func Connect() {
 	sqlDB2.SetMaxOpenConns(100)
 	sqlDB2.SetConnMaxLifetime(time.Hour)
 
+	fmt.Println("DB CONNECTED")
+
 	DB = db
 }
