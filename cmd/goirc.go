@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/joho/godotenv"
+	httpserver "github.com/timecrunch101/goirc/internal/services/httpServer"
 	"github.com/timecrunch101/goirc/internal/services/mysql"
 )
 
@@ -15,7 +16,7 @@ func main() {
 	}
 
 	mysql.Connect()
-
+	httpserver.Start()
 	fmt.Println("Goodbye, World!")
 
 }
