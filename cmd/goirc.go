@@ -7,7 +7,6 @@ import (
 
 	"github.com/joho/godotenv"
 	httpserver "github.com/timecrunch101/goirc/internal/services/httpserver"
-	"github.com/timecrunch101/goirc/internal/services/irc"
 	"github.com/timecrunch101/goirc/internal/services/mysql"
 )
 
@@ -23,7 +22,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		irc.StartServer()
+		// irc.StartServer()
 	}()
 	wg.Add(1)
 	go func() {
