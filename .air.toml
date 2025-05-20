@@ -4,8 +4,8 @@ tmp_dir = "tmp"
 
 [build]
   args_bin = []
-  bin = "tmp\\goirc.exe"
-  cmd = "go build -o ./tmp/goirc.exe ./cmd/goirc.go"
+  bin = "tmp/goirc"
+  cmd = "go build -o ./tmp/goirc ./cmd/goirc.go"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
   exclude_file = []

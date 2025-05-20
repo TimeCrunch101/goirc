@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/joho/godotenv"
-	httpserver "github.com/timecrunch101/goirc/internal/services/httpServer"
+	httpserver "github.com/timecrunch101/goirc/internal/services/httpserver"
 	"github.com/timecrunch101/goirc/internal/services/irc"
 	"github.com/timecrunch101/goirc/internal/services/mysql"
 )
