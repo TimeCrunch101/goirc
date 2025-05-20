@@ -15,6 +15,8 @@ type User struct {
 	Nick      string
 	Host      string
 	ClientBuf *bufio.Writer
+	WriteMu   sync.Mutex
+	SendCh    chan string
 }
 
 var (
@@ -22,10 +24,26 @@ var (
 	UserMu sync.RWMutex
 )
 
+func (u *User) startWritePump() {
+	go func() {
+		for msg := range u.SendCh {
+			if _, err := u.ClientBuf.WriteString(msg); err != nil {
+				break
+			}
+			if err := u.ClientBuf.Flush(); err != nil {
+				break
+			}
+		}
+		u.Conn.Close()
+	}()
+}
+
 func (u *User) NewUser() *User {
 	UserMu.Lock()
+	defer UserMu.Unlock()
 	Users[u] = true
-	UserMu.Unlock()
+	u.SendCh = make(chan string, 100)
+	go u.startWritePump()
 	return &User{
 		Conn:      u.Conn,
 		User:      u.User,
@@ -37,6 +55,7 @@ func (u *User) NewUser() *User {
 
 func (u *User) DeleteUser() {
 	UserMu.Lock()
+	defer UserMu.Unlock()
 	delete(Users, u)
-	UserMu.Unlock()
+	close(u.SendCh)
 }

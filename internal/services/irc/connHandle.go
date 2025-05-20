@@ -36,6 +36,12 @@ free:
 		if err != nil {
 			if err == io.EOF {
 				fmt.Println("Client disconnected:", conn.RemoteAddr())
+				user.DeleteUser()
+				break free
+			} else {
+				fmt.Println("SOME OTHER UNKNONW ERROR")
+				user.DeleteUser()
+				break free
 			}
 		}
 
