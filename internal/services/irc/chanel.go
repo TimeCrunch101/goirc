@@ -2,6 +2,7 @@ package irc
 
 import (
 	"fmt"
+	"log"
 	"sync"
 )
 
@@ -34,8 +35,14 @@ func JoinChan(u *User, channelName string) {
 	ch.UsersMu.Unlock()
 
 	// Send JOIN acknowledgment to the user
-	u.UserWriter.WriteString(":" + u.Nick + "!" + u.User + "@localhost JOIN :" + channelName + "\r\n")
-	u.UserWriter.Flush()
+	if _, err := u.UserWriter.WriteString(":" + u.Nick + "!" + u.User + "@localhost JOIN :" + channelName + "\r\n"); err != nil {
+		log.Printf("ERROR WRITING IN JoinChan: %v", err)
+		HandleDisconnect(u)
+	}
+	if err := u.UserWriter.Flush(); err != nil {
+		log.Printf("ERROR FLUSHING IN JoinChan: %v", err)
+		HandleDisconnect(u)
+	}
 }
 
 func BroadcastToChannel(sender *User, channelName, message string) {
@@ -48,13 +55,29 @@ func BroadcastToChannel(sender *User, channelName, message string) {
 
 	msg := fmt.Sprintf(":%s!%s@localhost PRIVMSG %s :%s\r\n", sender.Nick, sender.User, channelName, message)
 
+	var usersToDisconnect []*User
+
 	channel.UsersMu.Lock()
 	defer channel.UsersMu.Unlock()
 
 	for user := range channel.Users {
 		if user != sender {
-			user.UserWriter.WriteString(msg)
-			user.UserWriter.Flush()
+			if _, err := user.UserWriter.WriteString(msg); err != nil {
+				log.Printf("Broadcast write error to %s in #%s: %v", user.Nick, channelName, err)
+				usersToDisconnect = append(usersToDisconnect, user)
+				continue
+			}
+			if err := user.UserWriter.Flush(); err != nil {
+				log.Printf("Broadcast flush error to %s in #%s: %v", user.Nick, channelName, err)
+				usersToDisconnect = append(usersToDisconnect, user)
+			}
 		}
+	}
+
+	for _, u := range usersToDisconnect {
+		go func(u *User) {
+			log.Printf("Disconnecting %s due to write/flush error", u.Nick)
+			HandleDisconnect(u)
+		}(u)
 	}
 }
