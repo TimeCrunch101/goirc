@@ -6,10 +6,6 @@ import (
 	"net"
 )
 
-func handleConn(conn net.Conn) {
-
-}
-
 func StartServer() {
 	ln, err := net.Listen("tcp", ":6667")
 	if err != nil {
@@ -24,7 +20,7 @@ func StartServer() {
 			fmt.Println(err)
 		}
 
-		go handleConn(conn)
+		go HandleConnection(conn)
 	}
 
 }
