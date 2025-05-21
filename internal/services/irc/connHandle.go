@@ -16,13 +16,13 @@ func HandleConnection(conn net.Conn) {
 
 	user := NewUser(conn, "", "", "", writer, reader)
 
-free:
 	for {
 		str, err := user.UserReader.ReadString('\n')
 		fmt.Println(str)
 		if err != nil {
 			log.Printf("ERROR READING FROM CLIENT: %v", err)
-			break free
+			HandleDisconnect(user)
+			break
 		}
 		ParseMsg(str, user)
 
