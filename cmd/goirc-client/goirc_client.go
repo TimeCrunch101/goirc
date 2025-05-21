@@ -1,4 +1,4 @@
-package client
+package main
 
 import (
 	"bufio"
@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func Main() {
+func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 
@@ -81,7 +81,7 @@ func Listener(c net.Conn) {
 
 		if strings.HasPrefix(line, "PING") {
 			pong := "PONG" + line[4:] + "\r\n"
-			fmt.Fprintf(c, pong)
+			fmt.Fprintf(c, "%s", pong)
 		}
 
 	}

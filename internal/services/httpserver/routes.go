@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func InitGetRoutes() *Logger {
+func InitRoutes() *Logger {
 	mux := http.NewServeMux()
 
 	// Protected Routes
