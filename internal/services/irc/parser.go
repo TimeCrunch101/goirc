@@ -1,6 +1,7 @@
 package irc
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -45,8 +46,10 @@ func ParseMsg(str string, u *User) {
 
 	// Register the user once NICK and USER are both set
 	if u.Nick != "" && u.User != "" && !u.Registered {
+		u.Mu.Lock()
+		defer u.Mu.Unlock()
 		u.Registered = true
+		fmt.Println(u)
 		SendRegistrationMsg(u)
 	}
 }
-
