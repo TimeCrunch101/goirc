@@ -13,6 +13,11 @@ import (
 
 var DB *gorm.DB
 
+const (
+	MAX_IDLE_DB_CONNECTION int = 10
+	MAX_OPEN_DB_CONNECTION int = 100
+)
+
 func Connect() {
 	dbHost := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
@@ -44,11 +49,11 @@ func Connect() {
 	if err != nil {
 		log.Fatal("sql.DB from gorm.DB failed:", err)
 	}
-	sqlDB2.SetMaxIdleConns(10)
-	sqlDB2.SetMaxOpenConns(100)
+	sqlDB2.SetMaxIdleConns(MAX_IDLE_DB_CONNECTION)
+	sqlDB2.SetMaxOpenConns(MAX_OPEN_DB_CONNECTION)
 	sqlDB2.SetConnMaxLifetime(time.Hour)
 
-	fmt.Println("DB CONNECTED")
+	log.Printf("DB CONNECTED: %s", dbHost)
 
 	DB = db
 }
