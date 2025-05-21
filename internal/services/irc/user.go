@@ -3,6 +3,7 @@ package irc
 import (
 	"bufio"
 	"net"
+	"sync"
 )
 
 type User struct {
@@ -13,6 +14,7 @@ type User struct {
 	UserReader *bufio.Reader
 	UserConn   net.Conn
 	Registered bool
+	Mu         sync.Mutex
 }
 
 func NewUser(conn net.Conn, nick string, user string, name string, writer *bufio.Writer, reader *bufio.Reader) *User {
