@@ -3,70 +3,33 @@ package irc
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"log"
 	"net"
-
-	"github.com/timecrunch101/goirc/internal/models"
 )
 
 func HandleConnection(conn net.Conn) {
+
 	defer conn.Close()
 
 	reader := bufio.NewReader(conn)
 	writer := bufio.NewWriter(conn)
 
-	if err := sendWelcomeMsg(writer, "Welcome to the IRC Server!\n"); err != nil {
-		log.Println(err)
+	user, err := NewUser(conn, "", "", "", writer, reader)
+	if err != nil {
+		log.Println("Username already exists")
 		return
 	}
 
-	user := models.User{
-		Conn:      conn,
-		User:      "apaallen101",
-		Nick:      "timecrunch101",
-		Host:      conn.RemoteAddr().String(),
-		ClientBuf: writer,
-	}
-	user.NewUser()
-
-free:
 	for {
-		str, err := reader.ReadString('\n')
+		str, err := user.UserReader.ReadString('\n')
+		fmt.Println(str)
 		if err != nil {
-			if err == io.EOF {
-				fmt.Println("Client disconnected:", conn.RemoteAddr())
-				user.DeleteUser()
-				break free
-			} else {
-				fmt.Println("SOME OTHER UNKNONW ERROR")
-				user.DeleteUser()
-				break free
-			}
+			log.Printf("ERROR READING FROM CLIENT: %v", err)
+			HandleDisconnect(user)
+			break
 		}
-
-		switch str {
-		case "QUIT\r\n":
-			for user := range models.Users {
-				fmt.Println("User disconnected:", user.Conn)
-			}
-			user.DeleteUser()
-			break free
-		default:
-			writer.WriteString("Unexpected command, please try again.\r\n")
-			writer.Flush()
-		}
+		ParseMsg(str, user)
 
 	}
-}
 
-func sendWelcomeMsg(w *bufio.Writer, s string) error {
-	_, err := w.WriteString(s)
-	if err != nil {
-		return err
-	}
-	if err := w.Flush(); err != nil {
-		return err
-	}
-	return nil
 }

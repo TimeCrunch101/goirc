@@ -1,10 +1,10 @@
 package httpserver
 
 import (
+	"fmt"
 	"net/http"
 
-	"github.com/timecrunch101/goirc/internal/models"
-	"gorm.io/gorm"
+	"github.com/timecrunch101/goirc/internal/services/irc"
 )
 
 func NewLogger(handlerToWrap http.Handler) *Logger {
@@ -24,29 +24,15 @@ func NotFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetIrcUsers(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("HERE")
+	for k, v := range irc.Channels {
+		fmt.Printf("CHANNEL NAME: %s\r\n", k)
 
-	type user struct {
-		gorm.Model
-		User string
-		Nick string
-		Host string
-	}
-
-	var store []user
-
-	for userK := range models.Users {
-		newUser := user{
-			User: userK.User,
-			Nick: userK.Nick,
-			Host: userK.Host,
+		for k, v := range v.Users {
+			fmt.Printf("FOUND USER: %s\nREGISTERED?: %v\nCONNECTED TO CHANNEL?: %v\n", k.Nick, k.Registered, v)
 		}
-		store = append(store, newUser)
+
 	}
 
-	if len(store) == 0 {
-		SendMessage(w, "SUCCESS", "No users found", nil, http.StatusOK)
-		return
-	}
-
-	SendMessage(w, "SUCCESS", "Users found", store, http.StatusOK)
+	SendMessage(w, "SUCCESS", "No users found", nil, http.StatusOK)
 }

@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func InitGetRoutes() *Logger {
+func InitRoutes() *Logger {
 	mux := http.NewServeMux()
 
 	// Protected Routes
@@ -13,7 +13,6 @@ func InitGetRoutes() *Logger {
 	// Unprotected Routes
 	mux.HandleFunc("/unprotected", Unprotected)
 	mux.HandleFunc("/get/irc/users", GetIrcUsers)
-	mux.HandleFunc("/echo", EchoMessage)
 
 	// Default Routes
 	mux.HandleFunc("/", NotFound)
