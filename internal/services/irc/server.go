@@ -12,7 +12,7 @@ func StartServer() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("IRC RUNNING tcp:localhost:6667")
+	log.Println("IRC RUNNING tcp:localhost:6667")
 
 	for {
 		conn, err := ln.Accept()

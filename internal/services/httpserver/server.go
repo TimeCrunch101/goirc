@@ -1,7 +1,6 @@
 package httpserver
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -20,7 +19,7 @@ func (l *Logger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func Start() {
 
 	routes := InitRoutes()
-	fmt.Println("API Running http://localhost:8080/")
+	log.Println("API Running http://localhost:8080/")
 	err := http.ListenAndServe(":8080", routes)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)

@@ -14,8 +14,8 @@ import (
 var DB *gorm.DB
 
 const (
-	MAX_IDLE_DB_CONNECTION int = 10
-	MAX_OPEN_DB_CONNECTION int = 100
+	MAX_IDLE_DB_CONNECTION = 10
+	MAX_OPEN_DB_CONNECTION = 100
 )
 
 func Connect() {
