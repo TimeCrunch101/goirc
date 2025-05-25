@@ -14,7 +14,11 @@ func HandleConnection(conn net.Conn) {
 	reader := bufio.NewReader(conn)
 	writer := bufio.NewWriter(conn)
 
-	user := NewUser(conn, "", "", "", writer, reader)
+	user, err := NewUser(conn, "", "", "", writer, reader)
+	if err != nil {
+		log.Println("Username already exists")
+		return
+	}
 
 	for {
 		str, err := user.UserReader.ReadString('\n')

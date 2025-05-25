@@ -5,10 +5,6 @@ import (
 	"strings"
 )
 
-func GetChannelName(s string) {
-
-}
-
 func ParseMsg(str string, u *User) {
 	line := strings.Trim(str, "\r\n")
 	parts := strings.SplitN(line, " ", 2)
@@ -42,6 +38,11 @@ func ParseMsg(str string, u *User) {
 				BroadcastToChannel(u, target, message)
 			}
 		}
+	case "QUIT":
+		// FIXME: we shouldn't do this here
+		HandleDisconnect(u)
+		u.UserConn.Close()
+
 	}
 
 	// Register the user once NICK and USER are both set
